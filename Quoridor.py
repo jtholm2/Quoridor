@@ -316,21 +316,3 @@ class Board:
         pawn.set_winner_state(True)
         return True
 
-
-
-q = QuoridorGame()
-q.move_pawn(1, (4, 1))
-q.move_pawn(2, (4, 7))
-
-q.move_pawn(1, (4, 2))
-q.move_pawn(2, (4, 6))
-
-q.move_pawn(1, (4, 3))
-q.move_pawn(2, (4, 5))
-
-q.move_pawn(1, (4, 4))
-q.place_fence(2, 'h', (7, 1))
-q.print_board()
-q.place_fence(1, 'h', (4, 4))
-q.move_pawn(2, (3, 4))
-q.print_board()
