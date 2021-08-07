@@ -1,31 +1,6 @@
 # Author: James Holmes
-# Date: 8/6/2021
+# Date: 8/7/2021
 # Description: This project contains functionality that allows for the playing of a game called Quoridor.
-
-"""
-HALFWAY PROGRESS REPORT QUESTIONS
-
-1.	Determining how to store the board.
-    The board is stored as a Board object in a private variable in the QuoridorGame class. (Line 32)
-2.	Initializing the board.
-    I hard coded the intialization of the board when the QuoridorGame class is instantiated. (Line 119-129)
-3.	Determining how to track which player’s turn it is to play right now.
-    I decided to track this via the private variable 'turn' in the QuoridorGame class.
-4.	Determining how to validate a moving of the pawn.
-    I have a series of methods in the Board class that validate each movement (vertical, horizontal, or diagonal)
-    dependent on the provided tuple. (Lines 145-253).
-5.	Determining how to validate placing of the fences.
-    I don't have a method for this complete yet (it's in my TO DO!), but I plan on first verifying that the player
-    making the move has pieces left to play, then validating that a fence doesn't already exist in that position before
-    finally placing the fence.
-6.	Determining how to keep track of fences on the board and off the board.
-    I'm keeping track of fences off the board by storing that as a private variable in each of the Player objects.
-    I'll be keeping track of the fences on the board via 2 lists in my Board object - one for vertical fences and one
-    for horizontal fences.
-7.	Determining how to keep track of the pawn’s position on the board.
-    I'll be keeping track of the pawn's position on the board via the list of lists I initialized when I instantiated
-    the QuoridorGame class and the Board class.
-"""
 
 class QuoridorGame:
     """
@@ -46,6 +21,20 @@ class QuoridorGame:
         for row in self._board.get_board():
             print(row)
 
+    def get_player(self, player):
+        """
+        Retrieves the player object associated with the provided input.
+        :param player: Integer representing the player to retrieve.
+        :return: Returns the player object based on the provided input.
+        """
+        if player == 1:
+            return self._p1
+
+        elif player == 2:
+            return self._p2
+
+        return None
+
     def move_pawn(self, player, location):
         """
         This method allows a player to move or not move their pawn.
@@ -58,8 +47,14 @@ class QuoridorGame:
         if player != self._turn or self._state == "FINISHED":
             return False
 
-        result = self._board.make_move(player, location)
+        pawn = self.get_player(player)
+        pawn_name = pawn.get_name()
+
+        result = self._board.make_move(pawn, location)
+
         if result:
+            winning_state = self._board.check_win(pawn)
+            # if the move was successful, make it the other player's turn
             self._turn = 2 if player == 1 else 1
             return True
 
@@ -67,13 +62,24 @@ class QuoridorGame:
 
     def place_fence(self, player, fence, location):
         """
-        @param player:
-        @param fence:
-        @param location:
+        @param player: This is a numerical value 1 or 2 representing the player making the move.
+        @param fence: This is a string value 'v' or 'h' to represent the type of fence to be placed.
+        @param location: This is a tuple value representing the square the player wants to place the fence.
         @return:
         """
-        # TODO add functionality to support the adding of fences
-        return 0
+
+        if player != self._turn or self._state == "FINISHED":
+            return False
+
+        pawn = self.get_player(player)
+        result = self._board.place_fence(pawn, fence, location)
+
+        if result:
+            # if the move was successful, make it the other player's turn
+            self._turn = 2 if player == 1 else 1
+            return True
+
+        return False
 
     def is_winner(self, player):
         """
@@ -81,10 +87,9 @@ class QuoridorGame:
         :param player: Integer representing the player.
         :return: Returns True if the player has won, False otherwise.
         """
-        if player == 1:
-            return self._p1.get_winner_state()
+        pawn = self.get_player(player)
 
-        return self._p2.get_winner_state()
+        return pawn.get_winner_state()
 
 
 class Player:
@@ -99,7 +104,7 @@ class Player:
         self._pieces_left = 10
         self._winner = False
 
-    def get_pieces(self):
+    def get_pieces_left(self):
         """Returns the current number of pieces left to play."""
         return self._pieces_left
 
@@ -114,6 +119,14 @@ class Player:
     def get_winner_state(self):
         """Returns if this player is a winner or not."""
         return self._winner
+
+    def set_winner_state(self, won):
+        """
+        Sets the state if the Player won the game.
+        :param won: Bool representing the winning state. **NOTE** This is only used to modify it from False to True.
+        :return: None
+        """
+        self._winner = won
 
 
 class Board:
@@ -149,8 +162,12 @@ class Board:
         @param new_loc: Tuple representing the location the player wishes to move.
         @return: Returns a True/False based on whether or not it was able to successfully make a move.
         """
-        pawn = 'P1' if player == 1 else "P2"
-        current_loc = self.get_current_location(pawn)
+        # first checks to see if the new location is off the playing board
+        if new_loc[0] < 0 or new_loc[1] > 8:
+            return False
+
+        pawn_name = player.get_name()
+        current_loc = self.get_current_location(pawn_name)
         is_valid = False
 
         if current_loc == 0 or current_loc == new_loc or self._board[new_loc[1]][new_loc[0]] != " ":
@@ -170,7 +187,7 @@ class Board:
                 is_valid = self.make_diagonal_moves(current_loc, new_loc)
 
         if is_valid:
-            self._board[new_loc[1]][new_loc[0]] = pawn
+            self._board[new_loc[1]][new_loc[0]] = pawn_name
             self._board[current_loc[1]][current_loc[0]] = " "
             return True
 
@@ -210,6 +227,10 @@ class Board:
             if (current_loc[1]+1, current_loc[0]) not in self._horiz_fences:
                 return True
 
+        elif current_loc[1] - 2 == new_loc[1] and self._board[current_loc[1] - 1][current_loc[0]] != " ":
+            if (current_loc[1]-1, current_loc[0]) not in self._horiz_fences:
+                return True
+
         return False
 
     def make_horizontal_moves(self, current_loc, new_loc):
@@ -237,7 +258,7 @@ class Board:
         @return: Returns True or False depending on if the move is valid or not.
         """
 
-        if self._board[current_loc[0]][current_loc[1] + 1] == " ":
+        if self._board[current_loc[0]][current_loc[1]+1] == " " and self._board[current_loc[0]][current_loc[1]-1] == " ":
             # invalid diagonal move
             return False
 
@@ -252,14 +273,64 @@ class Board:
 
         return False
 
-    def check_win(self):
+    def place_fence(self, player, fence, location):
+        """
+        This method validates the move and then places the fence accordingly.
+        :param player: The Player object making the move.
+        :param fence: A string object representing the type of fence being placed.
+        :param location: A tuple representing where the player wants to place the fence.
+        :return: Makes the move and then returns True if it is valid and returns False otherwise.
+        """
+
+        if player.get_pieces_left() == 0 or location in self._vert_fences or location in self._horiz_fences:
+            return False
+
+        if fence == 'v':
+            if location[0] < 1 or location[0] > 8 or location[1] < 0 or location[1] > 8:
+                return False
+
+            self._vert_fences.append(location)
+
+        elif fence == 'h':
+            if location[0] < 0 or location[0] > 8 or location[1] < 1 or location[1] > 8:
+                return False
+
+            self._horiz_fences.append(location)
+
+        player.sub_pieces()
+        return True
+
+    def check_win(self, pawn):
         """
         Used to see if there is a winner!
-        :return: True if there is a winner, False otherwise.
+        :param pawn: Represents the Player object to check if they won the game.
+        :return: Modifies the Player object's state if they won and then returns True, but returns False otherwise.
         """
-        # TODO Add functionality to check if a player has won and change their state.
+        pawn_name = pawn.get_name()
+        if pawn_name == 'P1' and pawn_name not in self._board[-1]:
+            return False
+
+        elif pawn_name == 'P2' and pawn_name not in self._board[0]:
+            return False
+
+        pawn.set_winner_state(True)
+        return True
+
 
 
 q = QuoridorGame()
-print(q.move_pawn(2, (4,7))) # moves the Player2 pawn -- invalid move because only Player1 can start, returns False
-print(q.move_pawn(1, (4,1))) # moves the Player1 pawn -- valid move, returns True
+q.move_pawn(1, (4, 1))
+q.move_pawn(2, (4, 7))
+
+q.move_pawn(1, (4, 2))
+q.move_pawn(2, (4, 6))
+
+q.move_pawn(1, (4, 3))
+q.move_pawn(2, (4, 5))
+
+q.move_pawn(1, (4, 4))
+q.place_fence(2, 'h', (7, 1))
+q.print_board()
+q.place_fence(1, 'h', (4, 4))
+q.move_pawn(2, (3, 4))
+q.print_board()
