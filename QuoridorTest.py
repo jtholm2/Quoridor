@@ -381,6 +381,63 @@ class MyTestCase(unittest.TestCase):
 
         self.assertEqual(True, result)
 
+    def test_p2_move_after_p1_win(self):
+        q = QuoridorGame()
+        q.move_pawn(1, (4, 1))
+        q.move_pawn(2, (3, 8))
+
+        q.move_pawn(1, (4, 2))
+        q.move_pawn(2, (3, 7))
+
+        q.move_pawn(1, (4, 3))
+        q.move_pawn(2, (3, 6))
+
+        q.move_pawn(1, (4, 4))
+        q.move_pawn(2, (3, 5))
+
+        q.move_pawn(1, (4, 5))
+        q.move_pawn(2, (3, 4))
+
+        q.move_pawn(1, (4, 6))
+        q.move_pawn(2, (3, 3))
+
+        q.move_pawn(1, (4, 7))
+        q.move_pawn(2, (3, 2))
+
+        q.move_pawn(1, (4, 8))
+
+        result = q.move_pawn(2, (3,1))
+        self.assertEqual(False, result)
+
+    def test_p1_move_after_p2_win(self):
+        q = QuoridorGame()
+        q.move_pawn(1, (3, 0))
+        q.move_pawn(2, (4, 7))
+
+        q.move_pawn(1, (3, 1))
+        q.move_pawn(2, (4, 6))
+
+        q.move_pawn(1, (3, 2))
+        q.move_pawn(2, (4, 5))
+
+        q.move_pawn(1, (3, 3))
+        q.move_pawn(2, (4, 4))
+
+        q.move_pawn(1, (3, 4))
+        q.move_pawn(2, (4, 3))
+
+        q.move_pawn(1, (3, 4))
+        q.move_pawn(2, (4, 2))
+
+        q.move_pawn(1, (3, 6))
+        q.move_pawn(2, (4, 1))
+
+        q.move_pawn(1, (3, 7))
+        q.move_pawn(2, (4, 0))
+
+        result = q.move_pawn(1, (3,8))
+        self.assertEqual(False, result)
+
 
 if __name__ == '__main__':
     unittest.main()
