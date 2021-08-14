@@ -1,5 +1,5 @@
-import unittest
-from Quoridor import QuoridorGame, Player, Board
+import unittest, Player, Board
+from Quoridor import QuoridorGame
 
 
 class MyTestCase(unittest.TestCase):
