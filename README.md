@@ -21,7 +21,7 @@ When each player tries to place a fence on the board, the position of the fence 
 
 Consult the video and the PDF file's page 9, linked at the top of this README, to understand the game play rules.
 
-For example, jumping over the pawn is allowed only when the two pawns face each other. Diagonal movement is allowed when blocked by pawn + fence. A fence only blocks 1 square. Fences cannot be moved once placed thus they cannot be reused. All the rules from the video and the PDF apply unless the README or an Instructor explicitly says otherwise. Preventing the blocking of baseline is considered a part of fair-play rule (See Extra credit section below)
+For example, jumping over the pawn is allowed only when the two pawns face each other. Diagonal movement is allowed when blocked by pawn + fence. A fence only blocks 1 square. Fences cannot be moved once placed thus they cannot be reused. All the rules from the video and the PDF apply unless the README or an Instructor explicitly says otherwise.
 
 ## Playing the game
 
