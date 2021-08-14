@@ -438,6 +438,109 @@ class MyTestCase(unittest.TestCase):
         result = q.move_pawn(1, (3,8))
         self.assertEqual(False, result)
 
+    def test_1009(self):
+        """Test that a horizontal and vertical fence can be placed in the same coordinate -- player1"""
+        q = QuoridorGame()
+        q.place_fence(1, 'h', (3, 3))
+        q.place_fence(2, 'v', (5, 6))
+
+        overriding_fence_move = q.place_fence(1, 'v', (3, 3))
+        self.assertTrue(overriding_fence_move)
+
+    def test_1010(self):
+        """Test that a horizontal and vertical fence can be placed in the same coordinate -- player2"""
+        q = QuoridorGame()
+        q.place_fence(1, 'h', (3, 3))
+        q.place_fence(2, 'v', (5, 6))
+
+        q.place_fence(1, 'v', (5, 5))
+        overriding_fence_move = q.place_fence(2, 'h', (5, 6))
+        self.assertTrue(overriding_fence_move)
+
+    def test_p1_cant_jump_over_fence(self):
+        q = QuoridorGame()
+        q.move_pawn(1, (4, 1))
+        q.place_fence(2, 'h', (4, 2))  # blocking fence
+
+        jumping_over_fence_move = q.move_pawn(1, (4, 2))
+        self.assertFalse(jumping_over_fence_move)
+
+    def test_1103(self):
+        """test that pawns can move diagonally in the correct condition -- player1 -- left diagonal"""
+        q = QuoridorGame()
+        q.move_pawn(1, (4, 1))
+        q.move_pawn(2, (4, 7))
+
+        q.move_pawn(1, (4, 2))
+        q.move_pawn(2, (4, 6))
+
+        q.move_pawn(1, (4, 3))
+        q.move_pawn(2, (4, 5))
+
+        q.move_pawn(1, (4, 4))  # now they are face to face
+        q.place_fence(2, 'h', (4, 6))  # this will block the jump by player1
+
+        left_diagonal_move = q.move_pawn(1, (3, 5))
+        self.assertTrue(left_diagonal_move)
+
+    def test_1104(self):
+        """Test that pawns can move diagonally in the correct condition -- player1 - right diagonal"""
+        q = QuoridorGame()
+        q.move_pawn(1, (4, 1))
+        q.move_pawn(2, (4, 7))
+
+        q.move_pawn(1, (4, 2))
+        q.move_pawn(2, (4, 6))
+
+        q.move_pawn(1, (4, 3))
+        q.move_pawn(2, (4, 5))
+
+        q.move_pawn(1, (4, 4))  # now they are face to face
+        q.place_fence(2, 'h', (4, 6))  # this will block the jump by player1
+
+        right_diagonal_move = q.move_pawn(1, (5, 5))
+        self.assertTrue(right_diagonal_move)
+
+    def test_1107(self):
+        """Test that pawns can't move diagonally left in the wrong conditions -- when there is no wall blocking the jump -- player2"""
+        q = QuoridorGame()
+        q.move_pawn(1, (4, 1))
+        q.move_pawn(2, (4, 7))
+
+        q.move_pawn(1, (4, 2))
+        q.move_pawn(2, (4, 6))
+
+        q.move_pawn(1, (4, 3))
+        q.move_pawn(2, (4, 5))
+
+        q.move_pawn(1, (4, 4))  # now they are face to face
+        q.place_fence(2, 'h', (7, 1))  # just so that we can finish the turn
+
+        q.place_fence(1, 'h', (6, 6))  # this fence will *not* block the jump
+
+        wrong_left_diagonal_move = q.move_pawn(2, (3, 4))
+        self.assertFalse(wrong_left_diagonal_move)
+
+    def test_1108(self):
+        """Test that pawns can't move diagonally right in the wrong conditions -- when there is no wall blocking the jump -- player2"""
+        q = QuoridorGame()
+        q.move_pawn(1, (4, 1))
+        q.move_pawn(2, (4, 7))
+
+        q.move_pawn(1, (4, 2))
+        q.move_pawn(2, (4, 6))
+
+        q.move_pawn(1, (4, 3))
+        q.move_pawn(2, (4, 5))
+
+        q.move_pawn(1, (4, 4))  # now they are face to face
+        q.place_fence(2, 'h', (7, 1))  # just so that we can finish the turn
+
+        q.place_fence(1, 'h', (6, 6))  # this fence will *not* block the jump by player2
+
+        wrong_right_diagonal_move = q.move_pawn(2, (5, 4))
+        self.assertFalse(wrong_right_diagonal_move)
+
 
 if __name__ == '__main__':
     unittest.main()
