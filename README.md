@@ -11,17 +11,17 @@ The board should be treated as the following picture shows:
 ![162-u21-portfolio-project-quorridor-board](https://user-images.githubusercontent.com/230170/127580651-5de99bfd-d7d4-4492-9ef2-a5615f0e8b3b.png)
 
  
-The cell coordinates are expressed in `(x,y)` where `x` is the column number and `y` is the row numberThe board positions start with `(0,0)` and end at `(8,8)`. At the beginning of the game, player 1 places pawn 1 (P1) on the top center of the board and player 2 places pawn 2 (P2) on the bottom center of the board.  The position of P1 and P2 is `(4,0)` and `(4,8)` when the game begins.   
+The cell coordinates are expressed in `(x,y)` where `x` is the column number and `y` is the row number. The board positions start with `(0,0)` and end at `(8,8)`. At the beginning of the game, player 1 places pawn 1 (P1) on the top center of the board and player 2 places pawn 2 (P2) on the bottom center of the board.  The position of P1 and P2 is `(4,0)` and `(4,8)` when the game begins.   
 
 The four edges are labeled as fences. The row of the cells where the pawns are positioned at the start of the game are called base lines. A fence is 1 cell long in contrast to what you find the video and PDF saying.
 
 When each player tries to place a fence on the board, the position of the fence is defined by a letter and coordinates.  For vertical fences, we use `v` and for horizontal fences, we use `h`.  As an example, for the blue fence (vertical) in the picture, we use the coordinate of the top corner to define it and for the red fence (horizontal), we use coordinate of the left corner to define it. 
 
-## Validation rules
+## Game rules
 
 Consult the video and the PDF file's page 9, linked at the top of this README, to understand the game play rules.
 
-For example, jumping over the pawn is allowed only when the two pawns face each other. Diagonal movement is allowed when blocked by pawn + fence. A fence only blocks 1 square. Fences cannot be moved once placed thus they cannot be reused. All the rules from the video and the PDF apply unless the README or an Instructor explicitly says otherwise.
+For example, jumping over the pawn is allowed only when the two pawns face each other. Diagonal movement is allowed when blocked by pawn + fence. A fence only blocks 1 square. Fences cannot be moved once placed thus they cannot be reused.
 
 ## Playing the game
 
